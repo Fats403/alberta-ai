@@ -16,8 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Alberta AI",
-  description:
-    "Alberta's Role in the World's Insatiable Appetite for Artificial Intelligence",
+  description: "Fueling the Future of Innovation in Alberta",
 };
 
 export default function RootLayout({
