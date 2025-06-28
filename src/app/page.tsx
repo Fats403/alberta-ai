@@ -1012,7 +1012,7 @@ export default function HomePage() {
   );
 }
 
-export function AnimatedTestimonialsDemo() {
+function AnimatedTestimonialsDemo() {
   const testimonials = [
     {
       quote:
