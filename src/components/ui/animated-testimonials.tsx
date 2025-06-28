@@ -27,7 +27,7 @@ export const AnimatedTestimonials = ({
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    
+
     if (autoplay && !isHovered) {
       intervalRef.current = setInterval(() => {
         setActive((prev) => (prev + 1) % testimonials.length);
@@ -63,7 +63,7 @@ export const AnimatedTestimonials = ({
 
   useEffect(() => {
     resetInterval();
-    
+
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -76,7 +76,7 @@ export const AnimatedTestimonials = ({
   };
 
   return (
-    <div 
+    <div
       className="mx-auto max-w-sm px-4 py-20 font-sans antialiased md:max-w-4xl md:px-8 lg:px-12"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -86,8 +86,10 @@ export const AnimatedTestimonials = ({
           <div className="relative h-80 w-full">
             <AnimatePresence>
               {testimonials.map((testimonial, index) => (
-                <motion.div
+                <motion.button
                   key={testimonial.src}
+                  type="button"
+                  onClick={() => handleNext()}
                   initial={{
                     opacity: 0,
                     scale: 0.9,
@@ -124,7 +126,7 @@ export const AnimatedTestimonials = ({
                     draggable={false}
                     className="h-full w-full rounded-3xl object-cover object-center"
                   />
-                </motion.div>
+                </motion.button>
               ))}
             </AnimatePresence>
           </div>

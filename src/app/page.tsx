@@ -504,7 +504,7 @@ export default function HomePage() {
                 </h1>
               </motion.div>
               <motion.div variants={fadeInUp}>
-                <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg md:text-2xl text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
                   Alberta knows how to do it… and how to make it{" "}
                   <span className="text-emerald-600 font-semibold">green</span>.
                   Exploring the 7.5 GW Wonder Valley Data Center project and
