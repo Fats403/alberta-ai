@@ -1,13 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -339,7 +332,7 @@ export default function HomePage() {
                       </Link>
                     </Button>
                   </motion.div>
-                  <motion.div
+                  {/*<motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -353,7 +346,7 @@ export default function HomePage() {
                         View the Paper
                       </Link>
                     </Button>
-                  </motion.div>
+                  </motion.div>*/}
                 </div>
               </motion.div>
             </motion.div>
@@ -455,10 +448,6 @@ export default function HomePage() {
               viewport={{ once: true }}
               variants={fadeInUp}
             >
-              <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 text-lg px-6 py-2">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Market Intelligence
-              </Badge>
               <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-8 leading-tight">
                 Key Findings &
                 <span className="block text-primary">Opportunities</span>
