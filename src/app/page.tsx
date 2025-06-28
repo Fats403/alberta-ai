@@ -189,6 +189,7 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <Image
+                    className="rounded-full"
                     src="/albertaAI.webp"
                     alt="Alberta AI"
                     width={48}
@@ -419,7 +420,7 @@ export default function HomePage() {
               <motion.div variants={fadeInUp}>
                 <Badge
                   variant="secondary"
-                  className="mb-6 text-sm bg-white text-primary border-border shadow-md"
+                  className="mb-6 text-sm bg-accent text-primary border-border shadow-md"
                 >
                   <Rocket className="w-3 h-3 mr-1" />
                   Research Paper • June 2025 • Revision 10.5
