@@ -11,12 +11,13 @@ import {
   Mail,
   Rocket,
   Globe,
-  Paperclip,
   Loader2,
+  Menu,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedTestimonials } from "@/components/ui/animated-testimonials";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,6 +72,7 @@ export default function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Header scroll behavior
   useEffect(() => {
@@ -78,13 +80,10 @@ export default function HomePage() {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY < 10) {
-        // Always show header when at the top
         setIsHeaderVisible(true);
       } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Hide header when scrolling down (after 100px)
         setIsHeaderVisible(false);
       } else if (currentScrollY < lastScrollY) {
-        // Show header when scrolling up
         setIsHeaderVisible(true);
       }
 
@@ -94,6 +93,37 @@ export default function HomePage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  // Close mobile menu when clicking outside or scrolling
+  useEffect(() => {
+    const handleClickOutside = () => setIsMobileMenuOpen(false);
+    const handleScroll = () => setIsMobileMenuOpen(false);
+
+    if (isMobileMenuOpen) {
+      document.addEventListener("click", handleClickOutside);
+      window.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isMobileMenuOpen]);
+
+  // Smooth scroll function
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerHeight = 80;
+      const elementPosition = element.offsetTop - headerHeight;
+
+      window.scrollTo({
+        top: elementPosition,
+        behavior: "smooth",
+      });
+    }
+    setIsMobileMenuOpen(false); // Close mobile menu after navigation
+  };
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -187,44 +217,133 @@ export default function HomePage() {
                   </div>
                 </div>
               </motion.div>
+
+              {/* Desktop Navigation */}
               <motion.nav
                 className="hidden md:flex space-x-8"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <Link
-                  href="#about"
+                <button
+                  onClick={() => scrollToSection("about")}
                   className="relative group text-muted-foreground hover:text-primary transition-all duration-300 font-medium"
                 >
                   About
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-                <Link
-                  href="#findings"
+                </button>
+                <button
+                  onClick={() => scrollToSection("findings")}
                   className="relative group text-muted-foreground hover:text-primary transition-all duration-300 font-medium"
                 >
                   Key Findings
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-                <Link
-                  href="#authors"
+                </button>
+                <button
+                  onClick={() => scrollToSection("authors")}
                   className="relative group text-muted-foreground hover:text-primary transition-all duration-300 font-medium"
                 >
                   Authors
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </Link>
-                <Link
-                  href="#contact"
+                </button>
+                <button
+                  onClick={() => scrollToSection("contact")}
                   className="relative group text-muted-foreground hover:text-primary transition-all duration-300 font-medium"
                 >
                   Contact
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </Link>
+                </button>
               </motion.nav>
+
+              {/* Mobile Menu Button */}
+              <motion.button
+                className="md:hidden relative z-50 p-2 rounded-lg bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/80 transition-all duration-300"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  animate={{ rotate: isMobileMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="h-6 w-6 text-foreground" />
+                  ) : (
+                    <Menu className="h-6 w-6 text-foreground" />
+                  )}
+                </motion.div>
+              </motion.button>
             </div>
           </div>
         </header>
+
+        {/* Mobile Navigation Overlay */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden"
+                onClick={() => setIsMobileMenuOpen(false)}
+              />
+
+              {/* Mobile Menu */}
+              <motion.div
+                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="fixed top-20 left-4 right-4 bg-card/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl z-50 md:hidden"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <motion.nav
+                  className="p-6"
+                  initial={{ y: -10 }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  <div className="flex flex-col space-y-3">
+                    {[
+                      { label: "About", id: "about" },
+                      { label: "Key Findings", id: "findings" },
+                      { label: "Authors", id: "authors" },
+                      { label: "Contact", id: "contact" },
+                    ].map((item, index) => (
+                      <motion.button
+                        key={item.id}
+                        onClick={() => scrollToSection(item.id)}
+                        className="group text-left py-4 px-5 rounded-xl bg-background/50 hover:bg-background/80 border border-border/30 hover:border-primary/30 transition-all duration-300"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.15 + index * 0.05,
+                        }}
+                        whileHover={{ scale: 1.02, x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <span className="text-lg font-medium text-foreground group-hover:text-primary transition-colors duration-300">
+                          {item.label}
+                        </span>
+                        <div className="h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-300 mt-2"></div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.nav>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
         {/* Hero Section */}
         <section
@@ -232,7 +351,12 @@ export default function HomePage() {
           style={{ height: "calc(100vh - 80px)" }}
         >
           {/* Curved Element */}
-          <div className="absolute inset-0 z-0">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            className="absolute inset-0 z-0"
+          >
             <svg
               className="absolute inset-0 w-full h-full"
               viewBox="0 0 300 150"
@@ -284,7 +408,7 @@ export default function HomePage() {
                 fill="url(#curveGradient)"
               />
             </svg>
-          </div>
+          </motion.div>
 
           <div className="max-w-3xl mx-auto text-center relative z-10 w-full">
             <motion.div
@@ -295,7 +419,7 @@ export default function HomePage() {
               <motion.div variants={fadeInUp}>
                 <Badge
                   variant="secondary"
-                  className="mb-6 text-sm bg-accent text-primary border-border shadow-md"
+                  className="mb-6 text-sm bg-white text-primary border-border shadow-md"
                 >
                   <Rocket className="w-3 h-3 mr-1" />
                   Research Paper • June 2025 • Revision 10.5
@@ -497,7 +621,7 @@ export default function HomePage() {
                         <div className="bg-emerald-50/50 dark:bg-emerald-950/30 rounded-xl p-4 border border-emerald-200/30">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium text-muted-foreground">
-                              Alberta's Cost
+                              Alberta&apos;s Cost
                             </span>
                             <span className="text-2xl font-bold text-emerald-600">
                               12¢/kWh
@@ -558,7 +682,7 @@ export default function HomePage() {
                               Equivalent to
                             </div>
                             <div className="text-sm font-bold text-blue-600">
-                              Japan's Usage
+                              Japan&apos;s Usage
                             </div>
                           </div>
                           <div className="bg-blue-50/50 dark:bg-blue-950/30 rounded-lg p-3 text-center border border-blue-200/30">
@@ -683,7 +807,7 @@ export default function HomePage() {
         {/* Contact Section */}
         <section
           id="contact"
-          className="py-20 px-4 bg-gradient-to-br from-background to-accent text-foreground relative overflow-hidden"
+          className="py-20 px-8 bg-gradient-to-br from-background to-accent text-foreground relative overflow-hidden"
         >
           <div className="container mx-auto relative z-10">
             <div className="max-w-2xl mx-auto">
