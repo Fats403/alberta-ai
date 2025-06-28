@@ -14,6 +14,8 @@ import {
   Loader2,
   Menu,
   X,
+  Sun,
+  Moon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,6 +34,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useTheme } from "next-themes";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -73,6 +76,13 @@ export default function HomePage() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure theme is mounted to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Header scroll behavior
   useEffect(() => {
@@ -339,6 +349,66 @@ export default function HomePage() {
                         <div className="h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-300 mt-2"></div>
                       </motion.button>
                     ))}
+
+                    {/* Divider */}
+                    <motion.div
+                      initial={{ opacity: 0, scaleX: 0 }}
+                      animate={{ opacity: 1, scaleX: 1 }}
+                      transition={{ duration: 0.3, delay: 0.35 }}
+                      className="h-px bg-border/50 my-2"
+                    />
+
+                    {/* Theme Toggle */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.4 }}
+                      className="pt-2"
+                    >
+                      <div className="flex items-center justify-between py-4 px-5 rounded-xl bg-background/50 border border-border/30">
+                        <span className="text-lg font-medium text-foreground">
+                          Theme
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          <motion.button
+                            onClick={() => setTheme("light")}
+                            className={`p-2 rounded-lg transition-all duration-300 ${
+                              mounted && theme === "light"
+                                ? "bg-primary text-primary-foreground shadow-lg"
+                                : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground"
+                            }`}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Sun className="h-4 w-4" />
+                          </motion.button>
+                          <motion.button
+                            onClick={() => setTheme("dark")}
+                            className={`p-2 rounded-lg transition-all duration-300 ${
+                              mounted && theme === "dark"
+                                ? "bg-primary text-primary-foreground shadow-lg"
+                                : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground"
+                            }`}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Moon className="h-4 w-4" />
+                          </motion.button>
+                          <motion.button
+                            onClick={() => setTheme("system")}
+                            className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-300 ${
+                              mounted && theme === "system"
+                                ? "bg-primary text-primary-foreground shadow-lg"
+                                : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground"
+                            }`}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            Auto
+                          </motion.button>
+                        </div>
+                      </div>
+                    </motion.div>
                   </div>
                 </motion.nav>
               </motion.div>
@@ -427,7 +497,7 @@ export default function HomePage() {
                 </Badge>
               </motion.div>
               <motion.div variants={fadeInUp}>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
+                <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
                   Alberta&apos;s Role in the World&apos;s{" "}
                   <span className="text-primary">Insatiable Appetite</span> for
                   Artificial Intelligence
@@ -842,7 +912,7 @@ export default function HomePage() {
                 variants={fadeInUp}
                 className="w-full"
               >
-                <div className="bg-card/20 backdrop-blur-md p-8 rounded-2xl border border-border shadow-2xl">
+                <div className="bg-card/70 backdrop-blur-md p-8 rounded-2xl border border-border shadow-2xl">
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
