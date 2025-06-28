@@ -419,7 +419,7 @@ export default function HomePage() {
         {/* Hero Section */}
         <section
           className="h-screen px-8 relative overflow-hidden flex items-center"
-          style={{ height: "calc(100vh - 80px)" }}
+          style={{ height: "calc(100dvh - 80px)" }}
         >
           {/* Curved Element */}
           <motion.div
